@@ -1,0 +1,32 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment
+venv/
+env/
+\.venv/
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+
+# Python packaging
+*.egg-info/
+dist/
+build/
+
+# Data and artifacts (do NOT commit large datasets or trained models)
+data/
+*.pickle
+data.pickle
+model.pickle
+
+# Logs
+*.log
+
+# Editor directories
+.vscode/

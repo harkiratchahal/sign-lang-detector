@@ -1,0 +1,13 @@
+numpy>=1.23.0
+opencv-python>=4.5.5
+mediapipe>=0.10.0
+scikit-learn>=1.0.2
+
+# Notes:
+# - `numpy` is required by several scripts and scikit-learn.
+# - `opencv-python` provides cv2 for image capture and display.
+# - `mediapipe` is used to extract hand landmarks from images.
+# - `scikit-learn` is used for the RandomForest classifier.
+
+# Install with:
+#   pip install -r requirements.txt
