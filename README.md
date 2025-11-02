@@ -1,4 +1,234 @@
-# Sign Language Detector
+# Sign Language Detector - Enhanced Web Application
+
+A modern, interactive web application for creating custom sign language recognition systems with real-time classification and sentence building capabilities.
+
+## ✨ New Features
+
+- **Custom Sign Training**: Record and label your own signs with descriptive names
+- **Real-time Classification**: Live webcam-based sign language recognition
+- **Sentence Builder**: Chain multiple signs together to form complete sentences
+- **Beautiful UI**: Modern, responsive interface with smooth animations
+- **Easy Setup**: Automated virtual environment setup and dependency management
+- **MediaPipe Integration**: Accurate hand landmark detection
+- **FastAPI Backend**: Modern web framework with WebSocket support
+
+---
+
+## 🚀 Quick Start
+
+### 1. Setup Virtual Environment
+
+Run the setup script to create a virtual environment and install all dependencies:
+
+```powershell
+.\setup_venv.ps1
+```
+
+This will:
+
+- Create a Python virtual environment in `venv/`
+- Install all required packages from `requirements.txt`
+- Set up the project for first use
+
+### 2. Run the Application
+
+Start the web application:
+
+```powershell
+.\run_app.ps1
+```
+
+The application will start at `http://localhost:8000`
+
+Open your browser and navigate to the URL to access the web interface.
+
+---
+
+## 📖 How to Use the Web Application
+
+### Recording Custom Signs
+
+1. Navigate to the **Record Signs** tab
+2. Enter a sign name (e.g., "hello", "thanks", "A")
+3. Enter a description of what the sign means
+4. Click **Add New Sign**
+5. Click **Start Camera** to activate your webcam
+6. Click **Start Capturing** to record samples (default: 100 samples)
+7. Perform your sign repeatedly while the system captures images
+
+### Training the Model
+
+1. Navigate to the **Train Model** tab
+2. Review your data statistics (number of signs and samples)
+3. Click **Train Model** to train the AI
+4. Wait for training to complete (typically 10-30 seconds)
+5. Check the accuracy score
+
+### Live Classification
+
+1. Navigate to the **Live Classification** tab
+2. Click **Start Classification**
+3. Perform signs in front of your webcam
+4. See real-time predictions with confidence scores
+
+### Building Sentences
+
+1. Navigate to the **Sentences** tab
+2. Click **Start Recognition**
+3. Perform a sign
+4. Click **Add Current Sign** to add it to your sentence
+5. Repeat to build complete sentences
+6. Click **Clear Sentence** to start over
+
+---
+
+## 🛠️ Technical Stack
+
+- **Backend**: FastAPI (Python)
+- **Frontend**: Vanilla JavaScript, HTML5, CSS3
+- **Computer Vision**: MediaPipe, OpenCV
+- **Machine Learning**: scikit-learn (RandomForest)
+- **Real-time Communication**: WebSockets
+
+---
+
+## 📁 Project Structure
+
+```
+sign-language-detector/
+├── app.py                  # FastAPI application
+├── collect_imgs.py         # Image collection script (legacy)
+├── create_dataset.py       # Dataset creation with MediaPipe
+├── train_classifier.py     # Model training script
+├── inference_classifier.py # Real-time inference (legacy)
+├── requirements.txt        # Python dependencies
+├── setup_venv.ps1         # Virtual environment setup script
+├── run_app.ps1            # Application launcher script
+├── data/                  # Training images (organized by label)
+├── models/                # Trained models and data files
+│   ├── model.pickle       # Trained classifier
+│   ├── data.pickle        # Processed dataset
+│   └── labels.json        # Label mappings
+└── static/                # Web frontend
+    ├── index.html         # Main HTML page
+    ├── styles.css         # Styles and animations
+    └── app.js             # Frontend JavaScript logic
+```
+
+---
+
+## 🔧 Configuration
+
+### Camera Settings
+
+The application uses your default webcam. To change camera settings, modify the video constraints in `static/app.js`:
+
+```javascript
+navigator.mediaDevices.getUserMedia({
+  video: { width: 1280, height: 720 },
+});
+```
+
+### Training Parameters
+
+Adjust training parameters in `train_classifier.py`:
+
+```python
+model = RandomForestClassifier(
+    n_estimators=100,  # Number of trees
+    random_state=42,
+    n_jobs=-1         # Use all CPU cores
+)
+```
+
+---
+
+## 📊 Data Collection Tips
+
+For best results:
+
+- Collect at least 50-100 samples per sign
+- Use consistent lighting
+- Vary hand positions slightly for robustness
+- Use a plain background when possible
+- Ensure your full hand is visible in the frame
+
+---
+
+## 🐛 Troubleshooting
+
+### Camera Not Working
+
+- Ensure no other application is using your webcam
+- Grant browser permission to access the camera
+- Try a different browser (Chrome/Edge recommended)
+
+### Import Errors
+
+Make sure the virtual environment is activated:
+
+```powershell
+.\venv\Scripts\Activate.ps1
+```
+
+Then reinstall dependencies:
+
+```powershell
+pip install -r requirements.txt
+```
+
+### MediaPipe Installation Issues (Windows)
+
+Install Visual C++ Build Tools if you encounter errors:
+
+- Download from: https://visualstudio.microsoft.com/visual-cpp-build-tools/
+- Or try: `pip install mediapipe==0.10.0`
+
+### Low Accuracy
+
+- Collect more training samples (100+ per sign)
+- Ensure consistent hand positioning
+- Retrain the model after collecting more data
+- Check that signs are visually distinct
+
+---
+
+## 🚀 Advanced Usage
+
+### Using Standalone Python Scripts
+
+You can still use the original command-line scripts:
+
+```powershell
+# Activate virtual environment
+.\venv\Scripts\Activate.ps1
+
+# Create dataset from images
+python create_dataset.py
+
+# Train model
+python train_classifier.py
+
+# Run inference
+python inference_classifier.py
+```
+
+### API Endpoints
+
+The FastAPI backend exposes REST and WebSocket endpoints:
+
+- `GET /api/status` - Check server and model status
+- `GET /api/labels` - Get all labels
+- `POST /api/labels` - Add new label
+- `DELETE /api/labels/{label}` - Delete label
+- `POST /api/capture` - Capture training image
+- `POST /api/train` - Train model
+- `GET /api/data/stats` - Get data statistics
+- `WS /ws/inference` - WebSocket for real-time inference
+
+---
+
+## Old Documentation (Original Pipeline)
 
 This repository contains a small computer-vision pipeline that collects hand images, extracts hand landmarks using MediaPipe, trains a Random Forest classifier and runs real-time inference from a webcam.
 

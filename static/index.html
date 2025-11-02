@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sign Language Detector - Custom Training & Recognition</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <!-- Header -->
+      <header class="header">
+        <div class="logo">
+          <svg
+            class="logo-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M7 14C5.9 14 5 13.1 5 12V5C5 3.9 5.9 3 7 3C8.1 3 9 3.9 9 5V12C9 13.1 8.1 14 7 14Z"
+              fill="currentColor"
+            />
+            <path
+              d="M11 14C9.9 14 9 13.1 9 12V3C9 1.9 9.9 1 11 1C12.1 1 13 1.9 13 3V12C13 13.1 12.1 14 11 14Z"
+              fill="currentColor"
+            />
+            <path
+              d="M15 14C13.9 14 13 13.1 13 12V5C13 3.9 13.9 3 15 3C16.1 3 17 3.9 17 5V12C17 13.1 16.1 14 15 14Z"
+              fill="currentColor"
+            />
+            <path
+              d="M19 14C17.9 14 17 13.1 17 12V7C17 5.9 17.9 5 19 5C20.1 5 21 5.9 21 7V12C21 13.1 20.1 14 19 14Z"
+              fill="currentColor"
+            />
+            <path
+              d="M7 20C3.7 20 3 17.3 3 15V12H5V15C5 16.7 5.3 18 7 18H17C18.7 18 19 16.7 19 15V12H21V15C21 17.3 20.3 20 17 20H7Z"
+              fill="currentColor"
+            />
+          </svg>
+          <h1>Sign Language Detector</h1>
+        </div>
+        <div class="status-indicator">
+          <span class="status-dot" id="status-dot"></span>
+          <span id="status-text">Checking...</span>
+        </div>
+      </header>
+
+      <!-- Navigation Tabs -->
+      <nav class="tabs">
+        <button class="tab-btn active" data-tab="record">
+          <svg
+            class="tab-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <circle
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              stroke-width="2"
+            />
+            <circle cx="12" cy="12" r="6" fill="currentColor" />
+          </svg>
+          Record Signs
+        </button>
+        <button class="tab-btn" data-tab="train">
+          <svg
+            class="tab-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M12 2L2 7L12 12L22 7L12 2Z"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M2 17L12 22L22 17"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M2 12L12 17L22 12"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linejoin="round"
+            />
+          </svg>
+          Train Model
+        </button>
+        <button class="tab-btn" data-tab="classify">
+          <svg
+            class="tab-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M1 12C1 12 5 4 12 4C19 4 23 12 23 12C23 12 19 20 12 20C5 20 1 12 1 12Z"
+              stroke="currentColor"
+              stroke-width="2"
+            />
+            <circle
+              cx="12"
+              cy="12"
+              r="3"
+              stroke="currentColor"
+              stroke-width="2"
+            />
+          </svg>
+          Live Classification
+        </button>
+        <button class="tab-btn" data-tab="sentence">
+          <svg
+            class="tab-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M4 7H20M4 12H20M4 17H12"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+            />
+          </svg>
+          Sentences
+        </button>
+      </nav>
+
+      <!-- Tab Content -->
+      <main class="content">
+        <!-- Record Tab -->
+        <section class="tab-content active" id="record-tab">
+          <div class="panel">
+            <h2>Record Custom Signs</h2>
+            <p class="subtitle">Create your own sign language vocabulary</p>
+
+            <div class="form-group">
+              <label for="label-name"
+                >Sign Name (e.g., "hello", "thanks", "A")</label
+              >
+              <input
+                type="text"
+                id="label-name"
+                placeholder="Enter sign name"
+                class="input-field"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="label-description">What does this sign mean?</label>
+              <input
+                type="text"
+                id="label-description"
+                placeholder="E.g., 'Hello', 'Thank you', 'Letter A'"
+                class="input-field"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="num-images">Number of samples to collect</label>
+              <input
+                type="number"
+                id="num-images"
+                value="100"
+                min="50"
+                max="500"
+                class="input-field"
+              />
+            </div>
+
+            <button id="add-label-btn" class="btn btn-primary">
+              <svg
+                class="btn-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M12 5V19M5 12H19"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                />
+              </svg>
+              Add New Sign
+            </button>
+
+            <div class="camera-section">
+              <div class="video-container">
+                <video id="record-video" autoplay playsinline></video>
+                <canvas id="record-canvas" style="display: none"></canvas>
+                <div class="capture-overlay" id="capture-overlay">
+                  <div class="capture-counter" id="capture-counter">0/100</div>
+                </div>
+              </div>
+
+              <div class="camera-controls">
+                <button id="start-camera-btn" class="btn btn-secondary">
+                  <svg
+                    class="btn-icon"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M23 7L16 12L23 17V7Z"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linejoin="round"
+                    />
+                    <rect
+                      x="1"
+                      y="5"
+                      width="15"
+                      height="14"
+                      rx="2"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    />
+                  </svg>
+                  Start Camera
+                </button>
+                <button id="capture-btn" class="btn btn-primary" disabled>
+                  <svg
+                    class="btn-icon"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <circle
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    />
+                    <circle cx="12" cy="12" r="6" fill="currentColor" />
+                  </svg>
+                  Start Capturing
+                </button>
+              </div>
+            </div>
+
+            <div class="labels-list">
+              <h3>Your Signs</h3>
+              <div id="labels-container" class="labels-grid"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Train Tab -->
+        <section class="tab-content" id="train-tab">
+          <div class="panel">
+            <h2>Train Your Model</h2>
+            <p class="subtitle">Train the AI to recognize your custom signs</p>
+
+            <div class="stats-grid" id="data-stats">
+              <div class="stat-card">
+                <div class="stat-value" id="total-classes">0</div>
+                <div class="stat-label">Total Signs</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-value" id="total-images">0</div>
+                <div class="stat-label">Total Samples</div>
+              </div>
+            </div>
+
+            <div class="training-info">
+              <h3>Training Information</h3>
+              <ul>
+                <li>The model will be trained on all collected sign samples</li>
+                <li>
+                  Recommended: At least 50-100 samples per sign for best
+                  accuracy
+                </li>
+                <li>Training typically takes 10-30 seconds</li>
+                <li>You can retrain anytime to improve accuracy</li>
+              </ul>
+            </div>
+
+            <button id="train-btn" class="btn btn-primary btn-large">
+              <svg
+                class="btn-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M13 2L3 14H12L11 22L21 10H12L13 2Z"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linejoin="round"
+                />
+              </svg>
+              Train Model
+            </button>
+
+            <div id="training-output" class="output-box"></div>
+          </div>
+        </section>
+
+        <!-- Classification Tab -->
+        <section class="tab-content" id="classify-tab">
+          <div class="panel">
+            <h2>Live Sign Recognition</h2>
+            <p class="subtitle">Real-time classification of your signs</p>
+
+            <div class="video-container-large">
+              <video id="classify-video" autoplay playsinline></video>
+              <canvas id="classify-canvas"></canvas>
+              <div class="prediction-overlay" id="prediction-overlay">
+                <div class="prediction-box">
+                  <div class="prediction-label" id="prediction-label">
+                    No hand detected
+                  </div>
+                  <div
+                    class="prediction-confidence"
+                    id="prediction-confidence"
+                  ></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="classification-controls">
+              <button id="start-classify-btn" class="btn btn-primary btn-large">
+                <svg
+                  class="btn-icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path d="M5 3L19 12L5 21V3Z" fill="currentColor" />
+                </svg>
+                Start Classification
+              </button>
+              <button
+                id="stop-classify-btn"
+                class="btn btn-secondary btn-large"
+                disabled
+              >
+                <svg
+                  class="btn-icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <rect
+                    x="6"
+                    y="6"
+                    width="12"
+                    height="12"
+                    fill="currentColor"
+                  />
+                </svg>
+                Stop
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Sentence Tab -->
+        <section class="tab-content" id="sentence-tab">
+          <div class="panel">
+            <h2>Build Sentences</h2>
+            <p class="subtitle">Chain signs together to create sentences</p>
+
+            <div class="sentence-display">
+              <h3>Current Sentence:</h3>
+              <div class="sentence-box" id="sentence-box">
+                <p id="sentence-text">No signs added yet</p>
+              </div>
+              <button id="clear-sentence-btn" class="btn btn-secondary">
+                Clear Sentence
+              </button>
+            </div>
+
+            <div class="video-container-large">
+              <video id="sentence-video" autoplay playsinline></video>
+              <canvas id="sentence-canvas"></canvas>
+              <div class="prediction-overlay" id="sentence-overlay">
+                <div class="prediction-box">
+                  <div class="prediction-label" id="sentence-prediction-label">
+                    No hand detected
+                  </div>
+                  <div
+                    class="prediction-confidence"
+                    id="sentence-prediction-confidence"
+                  ></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="sentence-controls">
+              <button id="start-sentence-btn" class="btn btn-primary">
+                <svg
+                  class="btn-icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path d="M5 3L19 12L5 21V3Z" fill="currentColor" />
+                </svg>
+                Start Recognition
+              </button>
+              <button id="stop-sentence-btn" class="btn btn-secondary" disabled>
+                <svg
+                  class="btn-icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <rect
+                    x="6"
+                    y="6"
+                    width="12"
+                    height="12"
+                    fill="currentColor"
+                  />
+                </svg>
+                Stop
+              </button>
+              <button id="add-to-sentence-btn" class="btn btn-accent" disabled>
+                <svg
+                  class="btn-icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M12 5V19M5 12H19"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                  />
+                </svg>
+                Add Current Sign
+              </button>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <!-- Toast Notifications -->
+      <div id="toast-container"></div>
+    </div>
+
+    <script src="/static/app.js"></script>
+  </body>
+</html>
